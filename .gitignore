@@ -1,0 +1,6 @@
+migrations/
+changes to be made before handing over.txt
+__pycache__/
+static/CACHE
+env
+media

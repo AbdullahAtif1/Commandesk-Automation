@@ -9,11 +9,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 		path('', include('main.urls')),
 		path('dashboard/', include('dashboard.urls')),
-		path('stocks-orders-tracking/', include('main.urls')),
+		path('stocks-orders-tracking/', include('stock_track.urls')),
 		path('profile/', include('profiles.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
     urlpatterns+=static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    
+

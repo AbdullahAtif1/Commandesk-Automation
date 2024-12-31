@@ -39,7 +39,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+		'main.apps.MainConfig',
+		'dashboard.apps.DashboardConfig',
+		'profiles.apps.ProfilesConfig',
+		'stock_track.apps.StockTrackConfig',
+
 		'widget_tweaks',
+
+		'django.contrib.sites',  # Add this for third-party auth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
 ]
 
 MIDDLEWARE = [
@@ -50,7 +62,22 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+		"allauth.account.middleware.AccountMiddleware",
 ]
+
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+SITE_ID = 1  # This is required for django-allauth
+
+LOGIN_REDIRECT_URL = 'dashboard:index'
+LOGOUT_REDIRECT_URL = 'main:index'
+
+# Optional: Customize email verification
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Can be 'mandatory' or 'optional'
+ACCOUNT_EMAIL_REQUIRED = True
+
 
 ROOT_URLCONF = 'autmoate.urls'
 
@@ -70,6 +97,14 @@ TEMPLATES = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'allauth.account.auth_backends.AuthenticationBackend',
+		'django.contrib.auth.backends.ModelBackend',
+)
+
+AUTH_USER_MODEL = 'profiles.CustomUser'
+
+
 WSGI_APPLICATION = 'autmoate.wsgi.application'
 
 
@@ -79,7 +114,7 @@ WSGI_APPLICATION = 'autmoate.wsgi.application'
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-       'NAME': 'automate',
+       'NAME': 'automate2',
        'USER': 'postgres',
        'PASSWORD': '1234',
        'HOST': 'localhost',

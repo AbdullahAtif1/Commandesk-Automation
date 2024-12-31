@@ -3,5 +3,5 @@ changes to be made before handing over.txt
 __pycache__/
 static/CACHE
 env
-media
-db.sqlite3
+medias
+starting up.txt

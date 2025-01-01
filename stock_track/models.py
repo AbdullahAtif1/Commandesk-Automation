@@ -54,7 +54,8 @@ class Batch(models.Model):
     batch_number = models.CharField(max_length=50, unique=True)
     manufacture_date = models.DateField(blank=True, null=True)
     expiry_date = models.DateField(blank=True, null=True)
-    supplier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True, related_name="batches")
+    supplier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, blank=True, null=True, related_name="batches",
+                                  help_text="Leave empty if there is no supplier and the product is your own.")
 
     def __str__(self):
         return f"Batch {self.batch_number}"
@@ -64,15 +65,28 @@ class Batch(models.Model):
         if self.expiry_date:
             return self.expiry_date < timezone.now().date()
         return False
+    
+    class Meta:
+        verbose_name_plural = "Batches"
 
 
 class Category(models.Model):
+    company_owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="categories",
+        verbose_name="Owner",
+        null=True, blank=True
+    )
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name_plural = "Categories"
 
 
 class Product(models.Model):
@@ -125,6 +139,9 @@ class Inventory(models.Model):
 
     def __str__(self):
         return f"{self.product_variation.product.name} - Batch: {self.batch.batch_number} (Qty: {self.quantity})"
+
+    class Meta:
+        verbose_name_plural = "Inventories"
 
 
 class InventoryLog(models.Model):

@@ -2,5 +2,5 @@ migrations/
 __pycache__/
 static/CACHE
 env
-medias
+media
 starting up.txt

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Subscription
+from .models import *
 
 
 @admin.register(CustomUser)
@@ -37,3 +37,10 @@ class SubscriptionAdmin(admin.ModelAdmin):
     list_filter = ('plan_name', 'is_active', 'start_date', 'end_date')
     search_fields = ('user__username', 'user__email', 'plan_name')
     ordering = ('-start_date',)
+
+
+@admin.register(Client)
+class ClientAdmin(admin.ModelAdmin):
+    list_display = ('company_owner', 'name', 'email', 'client_type', 'total_spent', 'updated_at',)
+    list_filter = ('company_owner', 'client_type',)
+    ordering = ('-updated_at',)

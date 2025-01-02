@@ -12,6 +12,7 @@ Reason to Remove:
 Not required if you're not automating stock reordering or alert systems.
 Impact:
 This simplifies stock management but requires manual oversight to avoid stockouts.
+
 '''
 
 class Warehouse(models.Model):
@@ -75,8 +76,7 @@ class Category(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="categories",
-        verbose_name="Owner",
-        null=True, blank=True
+        verbose_name="Owner"
     )
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
@@ -127,6 +127,7 @@ class Inventory(models.Model):
         related_name="inventories",
         verbose_name="Owner"
     )
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="inventory")
     product_variation = models.ForeignKey(ProductVariation, on_delete=models.CASCADE, related_name="inventory")
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE, related_name="inventory")
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, related_name="inventory")

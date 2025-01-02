@@ -115,7 +115,7 @@ WSGI_APPLICATION = 'autmoate.wsgi.application'
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-       'NAME': 'automate2',
+       'NAME': 'automate3',
        'USER': 'postgres',
        'PASSWORD': '1234',
        'HOST': 'localhost',

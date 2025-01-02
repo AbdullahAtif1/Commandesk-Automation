@@ -9,7 +9,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 		path('', include('main.urls')),
 		path('dashboard/', include('dashboard.urls')),
-		path('stocks-orders-tracking/', include('stock_track.urls')),
+		path('inventory-tracking/', include('stock_track.urls')),
+		path('sales/', include('sales.urls')),
 		path('profile/', include('profiles.urls')),
     path('accounts/', include('allauth.urls')),
 ]

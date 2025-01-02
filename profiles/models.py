@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from allauth.account.signals import user_signed_up
 from django.dispatch import receiver
+from django.conf import settings
 from datetime import timedelta
 
 class CustomUser(AbstractUser):
@@ -68,4 +69,43 @@ def populate_user_details_on_social_auth(sender, request, user, sociallogin=None
 
         # Save the updated user instance
         user.save()
+
+
+
+class Client(models.Model):
+    company_owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="clients",
+        verbose_name=_("Company Owner")
+    )
+    CLIENT_TYPE_CHOICES = [
+				("first_time", "First Time"),
+				("repeat", "Repeat"),
+				("loyal", "Loyal"),
+				("high_value", "High Value"),
+		]
+    client_type = models.CharField(
+				max_length=20,
+				choices=CLIENT_TYPE_CHOICES,
+				default="first_time",
+				verbose_name=_("Client Type"),
+				help_text=_("Categorize the client based on their relationship with your business."),
+		)
+    name = models.CharField(max_length=255, verbose_name=_("Client Name"))
+    email = models.EmailField(blank=True, null=True, verbose_name=_("Email Address"))
+    phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name=_("Phone Number"))
+    address = models.TextField(blank=True, null=True, verbose_name=_("Address"))
+    notes = models.TextField(blank=True, null=True, verbose_name=_("Additional Notes"))
+    total_spent = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name=_("Total Spent"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created At"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated At"))
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _("Client")
+        verbose_name_plural = _("Clients")
+        ordering = ["-created_at"]	
 

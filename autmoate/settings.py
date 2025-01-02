@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 		'dashboard.apps.DashboardConfig',
 		'profiles.apps.ProfilesConfig',
 		'stock_track.apps.StockTrackConfig',
+		'sales.apps.SalesConfig',
 
 		'widget_tweaks',
 

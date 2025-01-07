@@ -26,8 +26,11 @@ SECRET_KEY = 'django-insecure-yywt9l^mto1or+1zt8x@)6@o91l24h@it*qlg%-ujsdj8rnup!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+SITE_ID = 1  # This is required for django-allauth
 
 # Application definition
 
@@ -68,15 +71,8 @@ MIDDLEWARE = [
 ]
 
 
-SOCIALACCOUNT_LOGIN_ON_GET = True
-
-SITE_ID = 1  # This is required for django-allauth
-
-LOGIN_REDIRECT_URL = 'dashboard:index'
-LOGOUT_REDIRECT_URL = 'main:index'
-
 # Optional: Customize email verification
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Can be 'mandatory' or 'optional'
+# ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Can be 'mandatory' or 'optional'
 ACCOUNT_EMAIL_REQUIRED = True
 
 
@@ -98,10 +94,21 @@ TEMPLATES = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = (
-    'allauth.account.auth_backends.AuthenticationBackend',
-		'django.contrib.auth.backends.ModelBackend',
-)
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ['email', 'profile'],
+				"AUTH_PARAMS": {"access_type": "online"}
+    }, 
+		# 'facebook': {
+    #     'APP': {
+    #         'client_id': '990003285512546',
+    #         'secret': 'e89d7f2638ffd15afcf755203f1399ee',
+    #     }
+    # }
+}
+
+
 
 AUTH_USER_MODEL = 'profiles.CustomUser'
 
@@ -171,3 +178,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "socialcodepk@gmail.com"
+EMAIL_HOST_PASSWORD = "nmmn lgcp slzg xwur"
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+LOGIN_REDIRECT_URL = 'main:index'
+# LOGOUT_REDIRECT_URL = 'main:index'

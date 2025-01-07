@@ -1,0 +1,11 @@
+<h1>Batch List</h1>
+<a href="{% url 'stock_track:create_batch' %}">Create New Batch</a>
+<ul>
+    {% for batch in batches %}
+        <li>
+            {{ batch.batch_number }} 
+            <a href="{% url 'stock_track:update_batch' batch.id %}">Edit</a>
+            <a href="{% url 'stock_track:delete_batch' batch.id %}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>

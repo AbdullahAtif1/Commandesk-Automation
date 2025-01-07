@@ -5,6 +5,7 @@ from allauth.account.signals import user_signed_up
 from django.dispatch import receiver
 from django.conf import settings
 from datetime import timedelta
+from allauth.socialaccount.signals import pre_social_login
 
 class CustomUser(AbstractUser):
     profile_picture = models.ImageField(upload_to="imgs/profile_pictures/", blank=True, null=True, verbose_name=_("Profile Picture"))
@@ -14,8 +15,8 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name=_("Phone Number"))
 
     class Meta:
-        verbose_name = _( "User")
-        verbose_name_plural = _( "Users")
+        verbose_name = _( "Owners")
+        verbose_name_plural = _( "Owners")
 
     def __str__(self):
         return self.username
@@ -69,6 +70,27 @@ def populate_user_details_on_social_auth(sender, request, user, sociallogin=None
 
         # Save the updated user instance
         user.save()
+        
+
+@receiver(pre_social_login)
+def social_account_login(sender, request, sociallogin, **kwargs):
+    """
+    Ensure that the social account is linked to an existing user.
+    If a user is already registered with the same email, link the accounts.
+    """
+    if sociallogin.is_existing:
+        return
+    
+    user = sociallogin.user
+    email = user.email
+    
+    try:
+        existing_user = CustomUser.objects.get(email=email)
+        sociallogin.user = existing_user
+        sociallogin.save(request)
+    except CustomUser.DoesNotExist:
+        # The user is new, so continue with the regular signup flow
+        pass
 
 
 

@@ -1,9 +1,18 @@
 {% extends "main_base.html" %}
 
+{% load socialaccount %}
+{% providers_media_js %}
+
 {% load static %}
 {% block 'title' %}BeautiSync{% endblock %}
 
 {% block 'content' %}
 
+	{{ request.user }}
+	<button>
+			<a href="{% provider_login_url 'google' %}?next=/">Login with Google</a>
+	</button>
+	<button>
+	</button>
 
 {% endblock %}

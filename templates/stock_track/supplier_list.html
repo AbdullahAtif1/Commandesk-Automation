@@ -1,0 +1,12 @@
+<h1>Your Suppliers</h1>
+<a href="{% url 'stock_track:create_supplier' %}">Create Supplier</a>
+
+<ul>
+    {% for supplier in suppliers %}
+        <li>
+            {{ supplier.name }}
+            <a href="{% url 'stock_track:update_supplier' supplier.id %}">Edit</a>
+            <a href="{% url 'stock_track:delete_supplier' supplier.id %}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>

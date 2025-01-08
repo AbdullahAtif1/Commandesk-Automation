@@ -128,7 +128,7 @@ class Inventory(models.Model):
         verbose_name="Owner"
     )
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="inventory")
-    product_variation = models.ForeignKey(ProductVariation, on_delete=models.CASCADE, related_name="inventory")
+    product_variation = models.ForeignKey(ProductVariation, on_delete=models.CASCADE, related_name="inventory") # Need to make it optional if no variation
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE, related_name="inventory")
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, related_name="inventory")
     quantity = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Changed to DecimalField
@@ -152,5 +152,5 @@ class InventoryLog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Log for {self.inventory.product_variation} - Change: {self.change_quantity}"
+        return f"Log for {self.inventory.product} - Change: {self.change_quantity}"
 

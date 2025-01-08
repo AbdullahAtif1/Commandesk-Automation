@@ -12,5 +12,21 @@ urlpatterns = [
     path("batches/<int:id>/update/", views.update_batch, name="update_batch"),
     path("batches/<int:id>/delete/", views.delete_batch, name="delete_batch"),
 
-		
+		# Category
+		path('categories/', views.category_list, name='category_list'),
+    path('categories/create/', views.create_category, name='create_category'),
+    path('categories/<int:id>/update/', views.update_category, name='update_category'),
+    path('categories/<int:id>/delete/', views.delete_category, name='delete_category'),
+
+		# Supply
+		path('suppliers/', views.supplier_list, name='supplier_list'),
+    path('suppliers/create/', views.create_supplier, name='create_supplier'),
+    path('suppliers/<int:id>/update/', views.update_supplier, name='update_supplier'),
+    path('suppliers/<int:id>/delete/', views.delete_supplier, name='delete_supplier'),
+
+		# Warehouse
+		path('warehouses/', views.warehouse_list, name='warehouse_list'),
+    path('warehouses/create/', views.create_warehouse, name='create_warehouse'),
+    path('warehouses/<int:id>/update/', views.update_warehouse, name='update_warehouse'),
+    path('warehouses/<int:id>/delete/', views.delete_warehouse, name='delete_warehouse'),
 ]

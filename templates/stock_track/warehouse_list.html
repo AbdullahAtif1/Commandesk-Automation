@@ -1,0 +1,12 @@
+<h1>Your Warehouses</h1>
+<a href="{% url 'stock_track:create_warehouse' %}">Create Warehouse</a>
+
+<ul>
+    {% for warehouse in warehouses %}
+        <li>
+            {{ warehouse.name }} - {{ warehouse.address }} - {{ warehouse.contact_number }}
+            <a href="{% url 'stock_track:update_warehouse' warehouse.id %}">Edit</a>
+            <a href="{% url 'stock_track:delete_warehouse' warehouse.id %}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>

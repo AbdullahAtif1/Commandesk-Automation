@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.facebook',
 ]
 
 MIDDLEWARE = [
@@ -101,10 +101,8 @@ SOCIALACCOUNT_PROVIDERS = {
 				"AUTH_PARAMS": {"access_type": "online"}
     }, 
 		# 'facebook': {
-    #     'APP': {
-    #         'client_id': '990003285512546',
-    #         'secret': 'e89d7f2638ffd15afcf755203f1399ee',
-    #     }
+		# 		'SCOPE': ['email', 'profile'],
+		# 		"AUTH_PARAMS": {"access_type": "online"}
     # }
 }
 

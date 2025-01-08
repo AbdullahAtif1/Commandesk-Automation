@@ -4,7 +4,6 @@ from django.utils.translation import gettext_lazy as _
 from allauth.account.signals import user_signed_up
 from django.dispatch import receiver
 from django.conf import settings
-from datetime import timedelta
 from allauth.socialaccount.signals import pre_social_login
 
 class CustomUser(AbstractUser):

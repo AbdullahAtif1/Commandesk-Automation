@@ -1,0 +1,12 @@
+<h1>Products</h1>
+<a href="{% url 'stock_track:create_product' %}">Create Product</a>
+
+<ul>
+    {% for product in products %}
+        <li>
+            {{ product.name }} ({{ product.sku }}) - {{ product.price }} 
+            <a href="{% url 'stock_track:update_product' product.id %}">Edit</a>
+            <a href="{% url 'stock_track:delete_product' product.id %}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>

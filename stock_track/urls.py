@@ -29,4 +29,11 @@ urlpatterns = [
     path('warehouses/create/', views.create_warehouse, name='create_warehouse'),
     path('warehouses/<int:id>/update/', views.update_warehouse, name='update_warehouse'),
     path('warehouses/<int:id>/delete/', views.delete_warehouse, name='delete_warehouse'),
+
+		# Product
+		path('products/', views.product_list, name='product_list'),
+    path('products/create/', views.create_product, name='create_product'),
+    path('products/<int:id>/update/', views.update_product, name='update_product'),
+    path('products/<int:id>/delete/', views.delete_product, name='delete_product'),
+
 ]

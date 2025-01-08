@@ -1,0 +1,7 @@
+<h1>{{ action }} Product</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{{ action }} Product</button>
+</form>
+<a href="{% url 'stock_track:product_list' %}">Back to Products</a>

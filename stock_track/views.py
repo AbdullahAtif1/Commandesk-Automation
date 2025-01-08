@@ -204,3 +204,55 @@ def delete_warehouse(request, id):
     warehouse.delete()
     return redirect('warehouse_list')
 
+
+
+############################### Products Processing
+
+# List Products
+def product_list(request):
+    products = Product.objects.filter(company_owner=request.user)
+    return render(request, 'stock_track/product_list.html', {'products': products})
+
+
+# Create Product
+def create_product(request):
+    
+    form = ProductForm(company_owner=request.user)
+    if request.method == "POST":
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.company_owner = request.user  # Set the company_owner
+            product.save()
+            form.save_m2m()  # Save the many-to-many relationships
+            return redirect('stock_track:product_list')
+    else:
+        form = ProductForm(company_owner=request.user)
+    
+    return render(request, 'stock_track/product_form.html', {'form': form, 'action': 'Create'})
+
+
+# Update Product
+def update_product(request, id):
+    
+    product = get_object_or_404(Product, id=id, company_owner=request.user)
+    form = ProductForm(user=request.user, instance=product)
+    if request.method == "POST":
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('stock_track:product_list')
+    else:
+        form = ProductForm(user=request.user, instance=product)
+    
+    return render(request, 'stock_track/product_form.html', {'form': form, 'action': 'Update'})
+
+
+# Delete Product
+def delete_product(request, id):
+    
+		product = get_object_or_404(Product, id=id, company_owner=request.user)
+		product.delete()
+		return redirect('stock_track:product_list')
+
+

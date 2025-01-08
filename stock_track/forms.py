@@ -1,5 +1,6 @@
 from django import forms
 from .models import *
+from django.forms import inlineformset_factory
 
 class BatchForm(forms.ModelForm):
     class Meta:
@@ -51,4 +52,18 @@ class ProductForm(forms.ModelForm):
             self.fields['batches'].queryset = Batch.objects.filter(company_owner=company_owner)
             # Filter categories by company_owner
             self.fields['category'].queryset = Category.objects.filter(company_owner=company_owner)
+
+
+class ProductVariationForm(forms.ModelForm):
+    class Meta:
+        model = ProductVariation
+        fields = ['name', 'sku', 'price', 'image']
+
+ProductVariationInlineFormSet = inlineformset_factory(
+    Product,
+    ProductVariation,
+    form=ProductVariationForm,
+    extra=1,  # Number of empty forms to display
+    can_delete=True  # Allow deletion of variations
+)
 

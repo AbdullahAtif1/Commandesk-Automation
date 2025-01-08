@@ -215,37 +215,63 @@ def product_list(request):
 
 
 # Create Product
-def create_product(request):
+def product_create(request):
     
-    form = ProductForm(company_owner=request.user)
+    product_form = ProductForm(company_owner=request.user)
+    variation_formset = ProductVariationInlineFormSet()
     if request.method == "POST":
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            product = form.save(commit=False)
-            product.company_owner = request.user  # Set the company_owner
-            product.save()
-            form.save_m2m()  # Save the many-to-many relationships
-            return redirect('stock_track:product_list')
-    else:
-        form = ProductForm(company_owner=request.user)
-    
-    return render(request, 'stock_track/product_form.html', {'form': form, 'action': 'Create'})
+        product_form = ProductForm(request.POST, company_owner=request.user)
+        variation_formset = ProductVariationInlineFormSet(request.POST, request.FILES)
 
+        if product_form.is_valid() and variation_formset.is_valid():
+            # Save the product
+            product = product_form.save(commit=False)
+            product.company_owner = request.user
+            product.save()
+            product_form.save_m2m()
+
+            # Save the variations
+            variations = variation_formset.save(commit=False)
+            for variation in variations:
+                variation.product = product
+                variation.save()
+            return redirect("stock_track:product_list")
+    else:
+        product_form = ProductForm(company_owner=request.user)
+        variation_formset = ProductVariationInlineFormSet()
+
+    return render(
+        request,
+        "stock_track/product_form.html",
+        {
+            "product_form": product_form,
+            "variation_formset": variation_formset,
+        },
+    )
 
 # Update Product
-def update_product(request, id):
-    
+def product_update(request, id):
     product = get_object_or_404(Product, id=id, company_owner=request.user)
-    form = ProductForm(user=request.user, instance=product)
     if request.method == "POST":
-        form = ProductForm(request.POST, instance=product)
-        if form.is_valid():
-            form.save()
-            return redirect('stock_track:product_list')
+        product_form = ProductForm(request.POST, instance=product, company_owner=request.user)
+        variation_formset = ProductVariationInlineFormSet(request.POST, request.FILES, instance=product)
+
+        if product_form.is_valid() and variation_formset.is_valid():
+            product_form.save()
+            variation_formset.save()
+            return redirect("stock_track:product_list")
     else:
-        form = ProductForm(user=request.user, instance=product)
-    
-    return render(request, 'stock_track/product_form.html', {'form': form, 'action': 'Update'})
+        product_form = ProductForm(instance=product, company_owner=request.user)
+        variation_formset = ProductVariationInlineFormSet(instance=product)
+
+    return render(
+        request,
+        "stock_track/product_form.html",
+        {
+            "product_form": product_form,
+            "variation_formset": variation_formset,
+        },
+    )
 
 
 # Delete Product

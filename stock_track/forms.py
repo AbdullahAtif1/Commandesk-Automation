@@ -67,3 +67,31 @@ ProductVariationInlineFormSet = inlineformset_factory(
     can_delete=True  # Allow deletion of variations
 )
 
+
+class InventoryForm(forms.ModelForm):
+    class Meta:
+        model = Inventory
+        fields = ['product', 'product_variation', 'batch', 'warehouse', 'quantity']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('company_owner', None)  # Retrieve the user from the view
+        super().__init__(*args, **kwargs)
+
+        if user:
+            # Filter related fields based on the logged-in user
+            self.fields['product'].queryset = Product.objects.filter(company_owner=user)
+            self.fields['product_variation'].queryset = ProductVariation.objects.filter(
+                product__company_owner=user
+            )
+            self.fields['batch'].queryset = Batch.objects.filter(company_owner=user)
+            self.fields['warehouse'].queryset = Warehouse.objects.filter(company_owner=user)
+
+
+class InventoryLogForm(forms.ModelForm):
+    class Meta:
+        model = InventoryLog
+        fields = ['reason']
+        widgets = {
+            'reason': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Reason for updating inventory...'}),
+        }
+

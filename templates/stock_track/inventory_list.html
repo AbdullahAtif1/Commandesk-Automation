@@ -1,0 +1,38 @@
+<h1>Inventory List</h1>
+<a href="{% url 'stock_track:inventory_create' %}">Add Inventory</a>
+<table>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Product Variation</th>
+            <th>Batch</th>
+            <th>Warehouse</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for inventory in inventories %}
+        <tr>
+            <td>{{ inventory.product.name }}</td>
+            <td>
+							{% if inventory.product_variation %}
+									{{ inventory.product_variation.name }}
+							{% else %}
+									N/A
+							{% endif %}
+						</td>
+            <td>{{ inventory.batch.batch_number }}</td>
+            <td>{{ inventory.warehouse.name }}</td>
+            <td>{{ inventory.quantity }}</td>
+            <td>
+                <a href="{% url 'stock_track:inventory_update' inventory.id %}">Edit</a>
+                <form method="post" action="{% url 'stock_track:inventory_delete' inventory.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

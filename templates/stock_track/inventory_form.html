@@ -1,0 +1,18 @@
+<h1>{% if is_update %}Edit{% else %}Add{% endif %} Inventory</h1>
+<form method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend>Inventory Details</legend>
+        {{ form.as_p }}
+    </fieldset>
+    
+    {% if is_update %}
+    <fieldset>
+        <legend>Reason for Update</legend>
+        {{ log_form.as_p }}
+    </fieldset>
+    {% endif %}
+    
+    <button type="submit">Save</button>
+</form>
+<a href="{% url 'stock_track:inventory_list' %}">Back to Inventory List</a>

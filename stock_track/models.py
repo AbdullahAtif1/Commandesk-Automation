@@ -128,7 +128,10 @@ class Inventory(models.Model):
         verbose_name="Owner"
     )
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="inventory")
-    product_variation = models.ForeignKey(ProductVariation, on_delete=models.CASCADE, related_name="inventory") # Need to make it optional if no variation
+    product_variation = models.ForeignKey(
+        ProductVariation, on_delete=models.CASCADE, related_name="inventory",
+        null=True, blank=True, help_text="Leave empty if the product has no variation"
+    )
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE, related_name="inventory")
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, related_name="inventory")
     quantity = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Changed to DecimalField

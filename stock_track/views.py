@@ -282,3 +282,68 @@ def delete_product(request, id):
 		return redirect('stock_track:product_list')
 
 
+############################### Inventory Processing
+
+def inventory_list(request):
+    inventories = Inventory.objects.filter(company_owner=request.user)
+    return render(request, "stock_track/inventory_list.html", {"inventories": inventories})
+
+
+def inventory_create(request):
+    
+    form = InventoryForm(company_owner=request.user)
+    if request.method == "POST":
+        form = InventoryForm(request.POST, company_owner=request.user)
+        if form.is_valid():
+            inventory = form.save(commit=False)
+            inventory.company_owner = request.user
+            inventory.save()
+            return redirect("stock_track:inventory_list")
+    else:
+        form = InventoryForm(company_owner=request.user)
+    return render(request, "stock_track/inventory_form.html", {"form": form})
+
+
+def inventory_update(request, id):
+    
+    inventory = get_object_or_404(Inventory, id=id, company_owner=request.user)
+    previous_quantity = inventory.quantity  # Track the current quantity before changes
+    inventory_form = InventoryForm(instance=inventory, company_owner=request.user)
+    log_form = InventoryLogForm()
+
+    if request.method == "POST":
+        inventory_form = InventoryForm(request.POST, instance=inventory, company_owner=request.user)
+        log_form = InventoryLogForm(request.POST)
+
+        if inventory_form.is_valid() and log_form.is_valid():
+            # Save inventory changes
+            updated_inventory = inventory_form.save(commit=False)
+            updated_inventory.company_owner = request.user
+            updated_inventory.save()
+
+            # Calculate quantity change
+            change_quantity = updated_inventory.quantity - previous_quantity
+
+            # Save inventory log
+            log = log_form.save(commit=False)
+            log.inventory = updated_inventory
+            log.change_quantity = change_quantity
+            log.save()
+
+            return redirect("stock_track:inventory_list")
+    else:
+        inventory_form = InventoryForm(instance=inventory, company_owner=request.user)
+        log_form = InventoryLogForm()
+
+    return render(
+        request,
+        "stock_track/inventory_form.html",
+        {"form": inventory_form, "log_form": log_form, "is_update": True},
+    )
+
+def inventory_delete(request, id):
+    
+    inventory = get_object_or_404(Inventory, id=id, company_owner=request.user)
+    inventory.delete()
+    return redirect("stock_track:inventory_list")
+

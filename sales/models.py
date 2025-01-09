@@ -42,7 +42,7 @@ class Sale(models.Model):
         related_name="sales",
         verbose_name="Company Owner"
     )
-    client = models.ForeignKey(
+    client = models.ForeignKey(  # update the client's total spent field on save signal
         Client,
         on_delete=models.CASCADE,
         related_name="sales",

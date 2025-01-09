@@ -118,7 +118,7 @@ class Client(models.Model):
     phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name=_("Phone Number"))
     address = models.TextField(blank=True, null=True, verbose_name=_("Address"))
     notes = models.TextField(blank=True, null=True, verbose_name=_("Additional Notes"))
-    total_spent = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name=_("Total Spent"))
+    total_spent = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name=_("Total Spent")) # Need to update the sales odel to update this
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created At"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated At"))
 

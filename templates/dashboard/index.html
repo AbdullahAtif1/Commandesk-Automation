@@ -1,0 +1,117 @@
+<h1>To-Do Lists</h1>
+
+<!-- Loop through all lists -->
+{% for todo_list in lists %}
+    <div>
+        <!-- Display List Title -->
+        <h2>
+            {{ todo_list.title }}
+            <!-- Edit List Button -->
+            <form method="post" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="edit_list">
+                <input type="hidden" name="list_id" value="{{ todo_list.id }}">
+                <input type="text" name="title" value="{{ todo_list.title }}" required>
+                <button type="submit">Save</button>
+            </form>
+
+            <!-- Delete List Button -->
+            <form method="post" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete_list">
+                <input type="hidden" name="list_id" value="{{ todo_list.id }}">
+                <button type="submit">Delete</button>
+            </form>
+        </h2>
+
+        <!-- Form to Add a New Item -->
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="add_item">
+            <input type="hidden" name="list_id" value="{{ todo_list.id }}">
+            {{ item_form.as_p }}
+            <button type="submit">Add Item</button>
+        </form>
+
+        <!-- Display All Items in the List -->
+        <ul>
+            {% for item in todo_list.tasks.all %}
+                <li id="item-{{ item.id }}">
+                    <span>
+                        {{ item.task }} - {% if item.is_completed %}Completed{% else %}Pending{% endif %}
+                        {% if item.due_date %}(Due: {{ item.due_date|date:"Y-m-d H:i" }}){% endif %}
+                    </span>
+                    
+                    <!-- Edit Button -->
+                    <button type="button" onclick="toggleEditForm({{ item.id }})">Edit</button>
+
+                    <!-- Delete Item Button -->
+                    <form method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="delete_item">
+                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                        <button type="submit">Delete</button>
+                    </form>
+
+                    <!-- Edit Item Form (Initially Hidden) -->
+                    <form method="post" id="edit-form-{{ item.id }}" style="display: none;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="edit_item">
+                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                        
+                        <!-- Task Input -->
+                        <label>Task</label>
+                        <input type="text" name="task" value="{{ item.task }}" required>
+                        
+                        <!-- Due Date Input -->
+                        <label>Due Date</label>
+                        <input type="datetime-local" name="due_date" 
+                               value="{{ item.due_date|date:"Y-m-d\TH:i" }}">
+                        
+                        <!-- Completed Checkbox -->
+                        <label>
+                            <input type="checkbox" name="is_completed" {% if item.is_completed %}checked{% endif %}>
+                            Completed
+                        </label>
+                        
+                        <button type="submit">Save</button>
+                        <button type="button" onclick="toggleEditForm({{ item.id }})">Cancel</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endfor %}
+
+<!-- Form to Create a New List -->
+<h3>Create New List</h3>
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="create_list">
+    {{ list_form.as_p }}
+    <button type="submit">Create</button>
+</form>
+
+
+<script>
+	function toggleEditForm(itemId) {
+			const itemElement = document.getElementById(`item-${itemId}`);
+			const editForm = document.getElementById(`edit-form-${itemId}`);
+			const displaySpan = itemElement.querySelector('span');
+			
+			if (editForm.style.display === "none") {
+					// Show the edit form
+					editForm.style.display = "block";
+					displaySpan.style.display = "none";
+			} else {
+					// Hide the edit form
+					editForm.style.display = "none";
+					displaySpan.style.display = "inline";
+			}
+	}
+	</script>
+	
+
+
+
+

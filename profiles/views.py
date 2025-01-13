@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Client
-from .forms import ClientForm
+from .models import *
+from .forms import ClientForm, UserProfileForm
 
 @login_required
 def client_management(request):
@@ -44,3 +44,45 @@ def client_management(request):
         "profiles/index.html",
         {"clients": clients, "add_form": add_form, "edit_forms": edit_forms},
     )
+
+def cstm_login_redirect(request):
+    print("cstm_login_redirect")
+    return redirect("profiles:profile_detail", username=request.user.username, user_id=request.user.id)
+
+
+@login_required
+def update_profile(request, username, user_id):
+    """
+    View to update the profile of the logged-in user.
+    """
+    # Ensure the logged-in user matches the user being updated
+    user = get_object_or_404(CustomUser, username=username, id=user_id)
+
+    if user != request.user:
+        messages.error(request, "You are not authorized to edit this profile.")
+        return redirect("profiles:profile_detail", username=username, user_id=user_id)
+
+    if request.method == "POST":
+        form = UserProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully.")
+            return redirect("profiles:profile_detail", username=user.username, user_id=user.id)
+    else:
+        form = UserProfileForm(instance=user)
+    
+    return render(request, "profiles/update_profile.html", {"form": form, "user": user})
+
+
+
+@login_required
+def profile_detail(request, username, user_id):
+    """
+    View to display the profile of a user based on username and user ID.
+    """
+    user = get_object_or_404(CustomUser, username=username, id=user_id)
+    return render(request, "profiles/profile_detail.html", {"user": user})
+
+
+
+

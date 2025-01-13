@@ -6,7 +6,7 @@ from .models import *
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     # Add fields to the user list display
-    list_display = ('username', 'email', 'is_staff', 'is_active', 'phone_number', 'website')
+    list_display = ('id', 'username', 'email', 'is_staff', 'is_active', 'phone_number', 'website')
     list_filter = ('is_staff', 'is_active', 'date_joined')
     search_fields = ('username', 'email', 'phone_number')
     ordering = ('username',)

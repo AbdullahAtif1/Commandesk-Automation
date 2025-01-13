@@ -68,7 +68,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
 		"allauth.account.middleware.AccountMiddleware",
+		
 ]
+
 
 
 # Optional: Customize email verification
@@ -105,6 +107,7 @@ SOCIALACCOUNT_PROVIDERS = {
 		# 		"AUTH_PARAMS": {"access_type": "online"}
     # }
 }
+
 
 
 
@@ -189,5 +192,5 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-LOGIN_REDIRECT_URL = 'main:index'
+LOGIN_REDIRECT_URL = 'profiles:cstm_login_redirect'
 # LOGOUT_REDIRECT_URL = 'main:index'

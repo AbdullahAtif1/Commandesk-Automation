@@ -42,17 +42,19 @@
             </tr>
 
             <!-- Inline Edit Form -->
-            <tr id="edit-client-form-{{ client.id }}" style="display: none;">
-                <td colspan="6">
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="client_id" value="{{ client.id }}">
-                        {{ edit_forms.client.id.as_p }}
-                        <button type="submit" name="edit_client">Save</button>
-                        <button type="button" onclick="toggleEditForm({{ client.id }})">Cancel</button>
-                    </form>
-                </td>
-            </tr>
+            <!-- Inline Edit Form -->
+						<tr id="edit-client-form-{{ client.id }}" style="display: none;">
+							<td colspan="6">
+									<form method="post">
+											{% csrf_token %}
+											<input type="hidden" name="client_id" value="{{ client.id }}">
+											{{ edit_forms.client.id.as_p }}
+											<button type="submit" name="edit_client">Save</button>
+											<button type="button" onclick="toggleEditForm({{ client.id }})">Cancel</button>
+									</form>
+							</td>
+						</tr>
+
         {% endfor %}
     </tbody>
 </table>

@@ -1,0 +1,18 @@
+<h1>Your Profile</h1>
+<p><strong>Username:</strong> {{ user.username }}</p>
+<p><strong>Email:</strong> {{ user.email }}</p>
+<p><strong>Phone:</strong> {{ user.phone_number|default:"N/A" }}</p>
+<p><strong>Website:</strong> <a href="{{ user.website }}" target="_blank">{{ user.website }}</a></p>
+<p><strong>Store Location:</strong> {{ user.store_location|default:"N/A" }}</p>
+
+{% if user.profile_picture %}
+    <p><strong>Profile Picture:</strong></p>
+    <img src="{{ user.profile_picture.url }}" alt="Profile Picture" width="150">
+{% endif %}
+
+{% if user.company_logo %}
+    <p><strong>Company Logo:</strong></p>
+    <img src="{{ user.company_logo.url }}" alt="Company Logo" width="150">
+{% endif %}
+
+<a href="{% url 'profiles:update_profile' user.username user.id %}">Edit Profile</a>

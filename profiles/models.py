@@ -61,13 +61,8 @@ def populate_user_details_on_social_auth(sender, request, user, sociallogin=None
             user.profile_picture = user_data.get('picture', default_profile_picture)
             user.username = user.username or user_data.get('name', default_username)
 
-        elif sociallogin.account.provider == 'facebook':
-            user.email = user_data.get('email', user.email)
-            # Fallback if the 'picture' field is missing or incomplete
-            user.profile_picture = user_data.get('picture', {}).get('data', {}).get('url', default_profile_picture)
-            user.username = user.username or user_data.get('name', default_username)
-
         # Save the updated user instance
+        user.profile_needs_update = True
         user.save()
         
 

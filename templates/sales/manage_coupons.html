@@ -1,0 +1,59 @@
+
+
+<h1>Manage Coupons</h1>
+
+<!-- Button to Show/Hide Create Coupon Form -->
+<button onclick="toggleForm()">Add New Coupon</button>
+
+<!-- Coupon Creation Form -->
+<div id="addCouponForm" style="display: none; margin-top: 20px; border: 1px solid #ccc; padding: 20px; border-radius: 5px;">
+		<h2>Create a New Coupon</h2>
+		<form method="post">
+				{% csrf_token %}
+				{{ form.as_p }}
+				<button type="submit">Save</button>
+				<button type="button" onclick="toggleForm()">Cancel</button>
+		</form>
+</div>
+
+<!-- Coupon Listing -->
+<h2 style="margin-top: 40px;">Your Coupons</h2>
+<table border="1" cellspacing="0" cellpadding="10" style="width: 100%; text-align: center;">
+	<thead>
+		<tr>
+				<th>#</th>
+				<th>Code</th>
+				<th>Discount (%)</th>
+				<th>Active</th>
+				<th>Expiry Date</th>
+				<th>Actions</th>
+		</tr>
+</thead>
+<tbody>
+		{% for coupon in coupons %}
+		<tr>
+				<td>{{ forloop.counter }}</td>
+				<td>{{ coupon.code }}</td>
+				<td>{{ coupon.discount_percentage }}</td>
+				<td>{{ coupon.active|yesno:"Yes,No" }}</td>
+				<td>{{ coupon.expiry_date|date:"Y-m-d" }}</td>
+				<td>
+						<!-- Edit Button -->
+						<a href="{% url 'sales:update_coupon' coupon.id %}" class="btn btn-sm btn-primary">Edit</a>
+
+						<!-- Delete Button -->
+						<a href="{% url 'sales:delete_coupon' coupon.id %}" class="btn btn-sm btn-primary">Delete</a>
+				</td>
+		</tr>
+		{% endfor %}
+</tbody>
+</table>
+
+
+<script>
+	function toggleForm() {
+            const formDiv = document.getElementById("addCouponForm");
+            formDiv.style.display = formDiv.style.display === "none" ? "block" : "none";
+        }
+</script>
+

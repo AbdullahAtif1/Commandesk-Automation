@@ -1,0 +1,44 @@
+<h1>Sales List</h1>
+
+<!-- Display success message -->
+{% if messages %}
+		{% for message in messages %}
+				<p style="color: green;">{{ message }}</p>
+		{% endfor %}
+{% endif %}
+
+<a href="{% url 'sales:add' %}" type="button">Add Sale</a>
+
+<table border="1" cellspacing="0" cellpadding="10" style="width: 100%; text-align: center;">
+		<thead>
+				<tr>
+						<th>Sale ID</th>
+						<th>Client</th>
+						<th>Total Price</th>
+						<th>Coupon</th>
+						<th>Sale Time</th>
+						<th>Actions</th>
+				</tr>
+		</thead>
+		<tbody>
+				{% for sale in sales %}
+						<tr>
+								<td>{{ sale.id }}</td>
+								<td>{{ sale.client.name }}</td>
+								<td>{{ sale.total_price }}</td>
+								<td>
+									{% if sale.coupon %}
+											{{ sale.coupon.code }}
+									{% else %}
+											N/A
+									{% endif %}
+								</td>							
+								<td>{{ sale.sale_time }}</td>
+								<td>
+										<a href="{% url 'sales:delete' sale.id %}">Delete</a>
+										<a href="{% url 'sales:edit_sale' sale.id %}">Edit</a>
+								</td>
+						</tr>
+				{% endfor %}
+		</tbody>
+</table>

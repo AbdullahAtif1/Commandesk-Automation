@@ -1,0 +1,38 @@
+<h2>Edit Sale</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ sale_form.as_p }}
+
+    <h3>Sale Items</h3>
+    <div id="sale-items-container">
+        {{ formset.management_form }}
+        {% for form in formset %}
+            <div class="sale-item-form">
+                {{ form.as_p }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <button type="button" id="add-item-button">Add Another Sale Item</button>
+    <br><br>
+    <button type="submit">Save Sale</button>
+</form>
+
+<script>
+    const addItemButton = document.getElementById("add-item-button");
+    const saleItemsContainer = document.getElementById("sale-items-container");
+    let formIndex = {{ formset.total_form_count }};
+
+    addItemButton.addEventListener("click", () => {
+        const emptyFormHtml = `
+            {{ empty_form.as_p|escapejs }}
+        `.replace(/__prefix__/g, formIndex);
+
+        const newForm = document.createElement("div");
+        newForm.classList.add("sale-item-form");
+        newForm.innerHTML = emptyFormHtml;
+        saleItemsContainer.appendChild(newForm);
+        formIndex++;
+    });
+</script>

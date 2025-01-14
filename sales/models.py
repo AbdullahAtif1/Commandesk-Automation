@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.conf import settings
 from django.db.models import Sum
@@ -42,7 +42,7 @@ class Sale(models.Model):
         related_name="sales",
         verbose_name="Company Owner"
     )
-    client = models.ForeignKey(  # update the client's total spent field on save signal
+    client = models.ForeignKey(
         Client,
         on_delete=models.CASCADE,
         related_name="sales",
@@ -77,6 +77,27 @@ class Sale(models.Model):
     class Meta:
         verbose_name = "Sale"
         verbose_name_plural = "Sales"
+        
+
+@receiver(post_save, sender=Sale)
+def update_client_total_spent_on_save(sender, instance, **kwargs):
+    """
+    Update the client's total spent field when a sale is created or updated.
+    """
+    client = instance.client
+    total_spent = client.sales.aggregate(total=Sum('total_price'))['total'] or 0
+    client.total_spent = total_spent
+    client.save()
+
+@receiver(post_delete, sender=Sale)
+def update_client_total_spent_on_delete(sender, instance, **kwargs):
+    """
+    Update the client's total spent field when a sale is deleted.
+    """
+    client = instance.client
+    total_spent = client.sales.aggregate(total=Sum('total_price'))['total'] or 0
+    client.total_spent = total_spent
+    client.save()
 
 class SaleItem(models.Model):
     sale = models.ForeignKey(

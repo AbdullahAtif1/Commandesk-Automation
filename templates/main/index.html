@@ -13,6 +13,12 @@
 			<a class="ml-5" href="{% provider_login_url 'google' %}">Login with Google</a>
 	</button>
 	<button>
+			<a class="ml-5" href="{% url 'profiles:cstm_login' %}">Login non-auth</a>
+	</button>
+	<button>
+			<a class="ml-5" href="{% url 'profiles:cstm_signup' %}">Signup non-auth</a>
+	</button>
+	<button>
 			<a class="ml-5" href="{% url 'main:logout' %}">Logout</a>
 	</button>
 	<button>

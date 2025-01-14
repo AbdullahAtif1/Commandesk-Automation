@@ -2,7 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import *
-from .forms import ClientForm, UserProfileForm
+from .forms import *
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login
 
 @login_required
 def client_management(request):
@@ -46,7 +48,6 @@ def client_management(request):
     )
 
 def cstm_login_redirect(request):
-    print("cstm_login_redirect")
     return redirect("profiles:profile_detail", username=request.user.username, user_id=request.user.id)
 
 
@@ -84,5 +85,30 @@ def profile_detail(request, username, user_id):
     return render(request, "profiles/profile_detail.html", {"user": user})
 
 
+def signup_view(request):
+    
+    form = CustomSignupForm()
+    if request.method == "POST":
+        form = CustomSignupForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            messages.success(request, "Account created successfully. You can log in now.")
+            return redirect("profiles:cstm_login")  # Redirect to the login page
+    else:
+        form = CustomSignupForm()
+    return render(request, "registration/signup.html", {"form": form})
 
+def login_view(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            messages.success(request, "Login successful!")
+            return redirect("profiles:profile_detail", username=user.username, user_id=user.id)
+        else:
+            messages.error(request, "Invalid username or password.")
+    else:
+        form = AuthenticationForm()
+    return render(request, "registration/login.html", {"form": form})
 

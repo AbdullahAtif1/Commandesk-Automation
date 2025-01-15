@@ -1,14 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.forms import modelformset_factory
-from .models import ToDoList, ToDoItem
-from .forms import ToDoListForm, ToDoItemInlineForm
+from .models import ToDoList, ToDoItem, Complaint
+from django.contrib import messages
+from .forms import ToDoListForm, ToDoItemInlineForm, ComplaintForm
 
 def index(request):
     # Fetch all to-do lists for the logged-in user
     lists = ToDoList.objects.filter(company_owner=request.user).order_by('-created_at')
     selected_list = None
 
-    # Handle list-level actions
+    # Handle list-level actions for the to do list
     if request.method == "POST":
         action = request.POST.get("action")
         if action == "create_list":
@@ -64,3 +64,51 @@ def index(request):
         "item_form": ToDoItemInlineForm(),
     }
     return render(request, "dashboard/index.html", context)
+
+
+def complaint_list(request):
+    complaints = Complaint.objects.filter(company_owner=request.user).order_by('-updated_at')
+    form = ComplaintForm()
+
+    if request.method == "POST":
+        form = ComplaintForm(request.POST)
+        if form.is_valid():
+            complaint = form.save(commit=False)
+            complaint.company_owner = request.user
+            complaint.save()
+            messages.success(request, "Complaint added successfully!")
+            return redirect("dashboard:complaint_list")
+        else:
+            messages.error(request, "Please correct the errors below.")
+    
+    return render(request, "dashboard/complaint_list.html", {"complaints": complaints, "form": form})
+
+
+# Edit Complaint
+def edit_complaint(request, id):
+    complaint = get_object_or_404(Complaint, id=id, company_owner=request.user)
+    if request.method == "POST":
+        form = ComplaintForm(request.POST, instance=complaint)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Complaint updated successfully!")
+            return redirect("dashboard:complaint_list")
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = ComplaintForm(instance=complaint)
+    return render(request, "dashboard/edit_complaint.html", {"form": form, "complaint": complaint})
+
+# Delete Complaint
+def delete_complaint(request, id):
+    complaint = get_object_or_404(Complaint, id=id, company_owner=request.user)
+    complaint.delete()
+    messages.success(request, "Complaint deleted successfully!")
+    return redirect("dashboard:complaint_list")
+
+def complaint_detail(request, id):
+    """
+    View to display the details of a specific complaint.
+    """
+    complaint = get_object_or_404(Complaint, id=id, company_owner=request.user)
+    return render(request, 'dashboard/complaint_detail.html', {'complaint': complaint})

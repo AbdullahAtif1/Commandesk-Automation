@@ -1,0 +1,39 @@
+<div class="container mt-5">
+	<h2>Complaint Details</h2>
+	<table class="table table-bordered mt-3">
+			<tbody>
+					<tr>
+							<th>Client</th>
+							<td>{{ complaint.client.name }}</td>
+					</tr>
+					<tr>
+							<th>Subject</th>
+							<td>{{ complaint.subject }}</td>
+					</tr>
+					<tr>
+							<th>Description</th>
+							<td>{{ complaint.description }}</td>
+					</tr>
+					<tr>
+							<th>Status</th>
+							<td>{{ complaint.get_status_display }}</td>
+					</tr>
+					<tr>
+							<th>Resolution Notes</th>
+							<td>{{ complaint.resolution_notes|default:"Not provided" }}</td>
+					</tr>
+					<tr>
+							<th>Created At</th>
+							<td>{{ complaint.created_at|date:"M d, Y H:i" }}</td>
+					</tr>
+					<tr>
+							<th>Updated At</th>
+							<td>{{ complaint.updated_at|date:"M d, Y H:i" }}</td>
+					</tr>
+			</tbody>
+	</table>
+	<a href="{% url 'dashboard:edit_complaint' complaint.pk %}" class="btn btn-primary">Edit</a>
+	<a href="{% url 'dashboard:delete_complaint' complaint.pk %}" class="btn btn-danger"
+		onclick="return confirm('Are you sure you want to delete this complaint?');">Delete</a>
+	<a href="{% url 'dashboard:complaint_list' %}" class="btn btn-secondary">Back to List</a>
+</div>

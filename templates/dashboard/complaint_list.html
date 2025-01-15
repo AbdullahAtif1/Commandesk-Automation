@@ -1,0 +1,53 @@
+<h2>Complaints</h2>
+
+<!-- Button to toggle form visibility -->
+<button id="toggle-form-btn">Add Complaint</button>
+
+<!-- Hidden form -->
+<div id="add-complaint-form" style="display: none;">
+    <h3>Add Complaint</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Complaint</button>
+    </form>
+</div>
+
+<hr>
+
+<!-- Complaints Table -->
+<table border="1" cellspacing="0" cellpadding="10" style="width: 100%; text-align: center;">
+    <thead>
+        <tr>
+            <th>Client</th>
+            <th>Subject</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for complaint in complaints %}
+        <tr>
+            <td>{{ complaint.client }}</td>
+            <td>
+                <a href="{% url 'dashboard:complaint_detail' complaint.id %}">
+                    {{ complaint.subject }}
+                </a>
+            </td>
+            <td>{{ complaint.get_status_display }}</td>
+            <td>
+                <a href="{% url 'dashboard:edit_complaint' complaint.id %}">Update</a>
+                <a href="{% url 'dashboard:delete_complaint' complaint.id %}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    // JavaScript to toggle the form visibility
+    document.getElementById("toggle-form-btn").addEventListener("click", function () {
+        const formDiv = document.getElementById("add-complaint-form");
+        formDiv.style.display = formDiv.style.display === "none" ? "block" : "none";
+    });
+</script>

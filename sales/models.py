@@ -6,7 +6,10 @@ from django.db.models import Sum
 from stock_track.models import Product, ProductVariation, Inventory, InventoryLog, Batch
 from profiles.models import Client
 from django.utils import timezone
-
+from django.utils.timezone import now
+from datetime import timedelta
+import threading
+from concurrent.futures import ThreadPoolExecutor
 
 '''
 I'll ask the free trial users owner about
@@ -79,26 +82,6 @@ class Sale(models.Model):
         verbose_name_plural = "Sales"
         
 
-@receiver(post_save, sender=Sale)
-def update_client_total_spent_on_save(sender, instance, **kwargs):
-    """
-    Update the client's total spent field when a sale is created or updated.
-    """
-    client = instance.client
-    total_spent = client.sales.aggregate(total=Sum('total_price'))['total'] or 0
-    client.total_spent = total_spent
-    client.save()
-
-@receiver(post_delete, sender=Sale)
-def update_client_total_spent_on_delete(sender, instance, **kwargs):
-    """
-    Update the client's total spent field when a sale is deleted.
-    """
-    client = instance.client
-    total_spent = client.sales.aggregate(total=Sum('total_price'))['total'] or 0
-    client.total_spent = total_spent
-    client.save()
-
 class SaleItem(models.Model):
     sale = models.ForeignKey(
         Sale,
@@ -152,6 +135,84 @@ class SaleItem(models.Model):
         ]
         verbose_name = "Sale Item"
         verbose_name_plural = "Sale Items"
+
+
+# EmailTask model logs tasks with metadata to manage and send emails.
+class EmailTask(models.Model):
+    EMAIL_TYPES = [
+        ("thank_you", "Thank You Email"),
+        ("feedback", "Feedback Email"),
+        ("recommendation", "Recommendation Email"),
+    ]
+    sale = models.ForeignKey(
+        Sale,
+        on_delete=models.CASCADE,
+        related_name='email_tasks',
+        verbose_name="Sale"
+    )
+    email_type = models.CharField(
+        max_length=50,
+        choices=EMAIL_TYPES,
+        verbose_name="Email Type"
+    )
+    time_to_send = models.DateTimeField(verbose_name="Time to Send")
+    sent = models.BooleanField(default=False, verbose_name="Sent")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
+
+    def __str__(self):
+        return f"{self.email_type} for Sale ID {self.sale.id} at {self.time_to_send}"
+
+    class Meta:
+        ordering = ['time_to_send']
+
+
+
+# post_save signal to automatically create email sending tasks when a new sale is added.
+@receiver(post_save, sender=Sale)
+def create_email_tasks(sender, instance, created, **kwargs):
+    if created:
+        now_time = now()
+        EmailTask.objects.bulk_create([
+            EmailTask(
+                sale=instance,
+                email_type="thank_you",
+                time_to_send=now_time,
+            ),
+            EmailTask(
+                sale=instance,
+                email_type="feedback",
+                time_to_send=now_time + timedelta(days=7),
+            ),
+            EmailTask(
+                sale=instance,
+                email_type="recommendation",
+                time_to_send=now_time + timedelta(days=30),
+            ),
+        ])
+
+
+@receiver(post_save, sender=Sale)
+def update_client_total_spent_on_save(sender, instance, **kwargs):
+    """
+    Update the client's total spent field when a sale is created or updated.
+    """
+    client = instance.client
+    total_spent = client.sales.aggregate(total=Sum('total_price'))['total'] or 0
+    client.total_spent = total_spent
+    client.save()
+
+
+@receiver(post_delete, sender=Sale)
+def update_client_total_spent_on_delete(sender, instance, **kwargs):
+    """
+    Update the client's total spent field when a sale is deleted.
+    """
+    client = instance.client
+    total_spent = client.sales.aggregate(total=Sum('total_price'))['total'] or 0
+    client.total_spent = total_spent
+    client.save()
+
 
 # Signal to update inventory and batch when a sale is made
 @receiver(post_save, sender=SaleItem)

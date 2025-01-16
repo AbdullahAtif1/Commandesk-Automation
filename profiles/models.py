@@ -6,7 +6,7 @@ from django.dispatch import receiver
 from django.conf import settings
 from allauth.socialaccount.signals import pre_social_login
 
-class CustomUser(AbstractUser):
+class CustomUser(AbstractUser): # Forgot to add the company_name field 🤦‍♂️
     profile_picture = models.ImageField(upload_to="imgs/profile_pictures/", blank=True, null=True, verbose_name=_("Profile Picture"))
     company_logo = models.ImageField(upload_to="imgs/company_logos/", blank=True, null=True, verbose_name=_("Company Logo"))
     website = models.URLField(blank=True, null=True, verbose_name=_("Website"))
@@ -85,7 +85,6 @@ def social_account_login(sender, request, sociallogin, **kwargs):
     except CustomUser.DoesNotExist:
         # The user is new, so continue with the regular signup flow
         pass
-
 
 
 class Client(models.Model):

@@ -106,7 +106,7 @@ too much clutter based on the current situation) ............. DONE
 
 
 => Generate invoices on order
-===> then email to the client
+===> then email to the client (?)
 
 => Delivery and logistics
 

@@ -114,10 +114,9 @@ too much clutter based on the current situation) ............. DONE
 
 => Delivery management and logistics
 
-=> Marketing (emails)
+=> Marketing (emails) ...... DONE
 ===> followups (personal)
 ======> thank you email after order/sale
-======> feedback asking (after 1 week)
 ======> AI based recommendations (after 1 month)
 ======> Mass email sender
 

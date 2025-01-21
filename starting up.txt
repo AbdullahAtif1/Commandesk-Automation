@@ -118,7 +118,10 @@ too much clutter based on the current situation) ............. DONE
 ===> followups (personal)
 ======> thank you email after order/sale
 ======> AI based recommendations (after 1 month)
+
 ======> Mass email sender
+
+=> email signlas for inventory; expirations and stuff
 
 
 => 3 methods of getting the client's on board: getting their already data inside the app:
@@ -126,6 +129,7 @@ too much clutter based on the current situation) ............. DONE
 1. manual entries using CRUD operaations ......DONE
 2. a method by which, if they are using excel sheets, upload them and the system handles the rest
 3. connect their woocommerce, shopify or other popular shops to the system using their APIs, and filling in the data
+===> Integrate with popular beauty-focused platforms like Sephora, Ulta, or even Amazon to allow for easier product listing, orders, and marketing.
 
 
 => Finances
@@ -133,6 +137,9 @@ too much clutter based on the current situation) ............. DONE
 ===> Profits, Costs, losses
 
 => Analytics
+===> Use AI or machine learning to provide deeper insights into customer behavior, such as specific trends in purchasing based on age,
+     gender, location, and product preferences, which can help businesses tailor their offerings.
+
 
 => AI chatbot (?)
 
@@ -194,3 +201,6 @@ https://www.youtube.com/shorts/VSoyTVWfAsw
 https://www.youtube.com/shorts/8kWL6xfd_ZM
 https://www.youtube.com/shorts/aV97_98s_1c
 From the free users
+
+Web design:
+https://www.youtube.com/shorts/VGBVW_rYHaA

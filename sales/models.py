@@ -10,6 +10,8 @@ from django.utils.timezone import now
 from datetime import timedelta
 import threading
 from concurrent.futures import ThreadPoolExecutor
+from django.core.mail import send_mail
+import random
 
 '''
 I'll ask the free trial users owner about
@@ -168,7 +170,7 @@ class EmailTask(models.Model):
 
 
 
-# post_save signal to automatically create email sending tasks when a new sale is added.
+# Post Sale save signal to automatically create email sending tasks.
 @receiver(post_save, sender=Sale)
 def create_email_tasks(sender, instance, created, **kwargs):
     if created:
@@ -249,3 +251,75 @@ def update_inventory_and_batch(sender, instance, created, **kwargs):
         except Exception as e:
             # Error Handling
             print(f"Error updating inventory and batch: {e}")
+
+
+def generate_product_recommendations(sale):
+    """
+    Generate product recommendations based on the categories of purchased products.
+    """
+    # Get all purchased products from the sale
+    purchased_products = sale.items.all().values_list('product', flat=True)
+
+    # Fetch the categories of the purchased products
+    categories = Product.objects.filter(id__in=purchased_products).values_list('category', flat=True).distinct()
+
+    # Initialize recommendations
+    recommendations = []
+
+    for category_id in categories:
+        # Get all products in the category, excluding the purchased products
+        category_products = Product.objects.filter(category_id=category_id).exclude(id__in=purchased_products)
+
+        # Randomly sample up to 5 products from the category
+        sampled_products = random.sample(list(category_products), min(len(category_products), 5))
+        recommendations.extend(sampled_products)
+
+    # Format the recommendations into a string
+    recommendation_list = "\n".join([product.name for product in recommendations])
+
+    # Return the recommendations or a default message
+    return recommendation_list or "No recommendations available at this time."
+
+# Function for directly sending in the email campaings after the sail to the company's client
+def send_email_task(email_task):
+    sale = email_task.sale
+    company_owner = sale.company_owner
+    recipient_email = sale.client.email  # Assuming the Client model has an email field.
+
+    # Define email content
+    email_subject = ""
+    email_body = ""
+    if email_task.email_type == "thank_you":
+        email_subject = f"Thank You for Your Purchase, {sale.client.name}"
+        email_body = f"Dear {sale.client.name},\n\nThank you for your recent purchase! We appreciate your business.\n\nBest Regards,\n{company_owner.company_name}"
+    elif email_task.email_type == "feedback":
+        email_subject = f"We'd Love Your Feedback, {sale.client.name}"
+        email_body = f"Dear {sale.client.name},\n\nPlease share your feedback on your recent purchase to help us improve.\n\nBest Regards,\n{company_owner.company_name}"
+    elif email_task.email_type == "recommendation":
+        # Assuming you have a function to generate recommendations
+        recommendations = generate_product_recommendations(sale)
+        email_subject = "We Have Some Recommendations for You!"
+        email_body = f"Dear {sale.client.name},\n\nBased on your previous purchases, you might like:\n{recommendations}\n\nBest Regards,\n{company_owner.company_name}"
+
+    # Send email
+    try:
+        send_mail(
+            subject=email_subject,
+            message=email_body,
+            from_email=company_owner.email,  # Sender's email
+            recipient_list=[recipient_email],
+            auth_user=company_owner.email,
+            auth_password=company_owner.email_password,
+            fail_silently=False,
+        )
+        email_task.sent = True  # Mark task as sent
+        email_task.save()
+    except Exception as e:
+        print(f"Error sending email for task {email_task.id}: {e}")
+
+
+executor = ThreadPoolExecutor(max_workers=5)
+
+def execute_email_tasks(email_tasks):
+    for email_task in email_tasks:
+        executor.submit(send_email_task, email_task)

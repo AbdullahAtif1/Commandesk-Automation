@@ -1,0 +1,197 @@
+starting up
+database setup
+static and media files setup
+apps division
+oauth stuff
+models
+fomrs
+views
+templates and dsigning
+
+
+additional features:
+
+Subdomains for Each Company:
+e.g., companyname.yourplatform.com.
+Use middleware or django-hosts for routing.
+
+REASONS FOR HAVING A MINIMALIST FREE VERSION PACKAGE
+
+2. Minimal Feature Requirements
+Simplicity: Some businesses only need basic functionalities to meet their needs. For example,
+            a small company may only require simple task management or basic website analytics, which can be covered by the free version.
+Ease of Use: The free version often offers a streamlined, simple interface with fewer features, 
+            making it easier for users to get started quickly without needing extensive training or onboarding.
+
+4. Limited Needs at the Moment
+Non-Critical Use Cases: Businesses may only require minimal features for non-critical tasks. 
+                        For instance, using a free project management tool with limited functionality for basic 
+												project tracking or a free email marketing service to send occasional newsletters.
+Scalability Considerations: Some businesses start small and use free versions to scale gradually. They might only need
+                         basic features at the outset and can upgrade later when their needs grow.
+
+
+
+
+
+
+apps and pages
+
+0. Main app
+for displaying landing pages, pricing, about, contact etc
+
+1. dashboard app
+
+templates and views to "display" the following, plus biz profile, links to stocks, orders, clients view pages (and more if needed, in the navbar)
+
+should haves:
+=> analytics, finances, to_do_list, complaint mngmnt, Payment Gateway
+
+2. stock track
+
+deletes/edits/new entries on stock templates
+display on dashboard
+
+should have (models for):
+=> stock/inventory
+
+3. profiles
+
+should have (models for):
+=> biz profile
+=> clients info management
+
+4. Orders app
+
+should have (models for):
+=> order updates
+=> delivery mngmnt (?)
+
+
+
+
+
+
+current tasks:
+
+=> stock models .... DONE
+===> need to configure the user model for the company first before I can lauch the stock models to the admin panel.......... DONE
+======> Haven't configured the frontend display of forms yet ........ DONE
+
+=> upload the stock models to the admin panel ............... DONE
+
+=> A different app for handling sales (hence, initial plan for having the stocks and sales in one app canceled, 
+too much clutter based on the current situation) ............. DONE
+
+=> Create sales and dashboard models ........DONE
+===> Need the customer details model first in the profiles app .........DONE
+======> keep track of the total spent by the customer (will be done inside the sales model) ......... DONE
+
+=> Add them to the admin panel .......DONE
+
+=> Dashboard models for the Dashboard app .......DONE
+
+=> Dashboard models added to admin ..........DONE
+
+=> Start writing views for the apps similar to the admin, CRUD
+
+===> Inventory Management ..... DONE
+===> Sales .....DONE
+===> Profiles
+======> The subscription model will be dealt with once the payment processing is included
+======> I can do the client model for now. ..........DONE
+======> The user authentication has to be done in two ways: 1. OAuth users and their account creations 2. Users who signup manually ... DONE
+===> Dashboard (Todo List) ....... DONE
+======> Need to fix the OAuth problem first ..DONE
+
+
+=> Generate invoices on order
+===> then email to the client
+
+=> Delivery and logistics
+
+=> Complaints management CRUD
+
+=> Delivery management and logistics
+
+=> Marketing (emails)
+===> followups (personal)
+======> thank you email after order/sale
+======> feedback asking (after 1 week)
+======> AI based recommendations (after 1 month)
+======> Mass email sender
+
+
+=> 3 methods of getting the client's on board: getting their already data inside the app:
+
+1. manual entries using CRUD operaations ......DONE
+2. a method by which, if they are using excel sheets, upload them and the system handles the rest
+3. connect their woocommerce, shopify or other popular shops to the system using their APIs, and filling in the data
+
+
+=> Finances
+===> Sales reports D/W/M/Y
+===> Profits, Costs, losses
+
+=> Analytics
+
+=> AI chatbot (?)
+
+=> landing page for emial opt in for cohorts (free trial, 80%, 60% .... so on)
+
+
+
+
+
+
+
+
+
+
+
+
+
+additional features:
+
+=> Allow the user to download the spreadsheet reults from the db for model(s)
+
+
+
+Changes near end
+
+=> detect user timezone and set it in the settings for them
+=> Signals are great for background updates but can slow down the request-response cycle, especially for large sales. 
+		Consider moving inventory and batch updates to a task queue (e.g., using Django Q or a similar library).
+=> Add 'messages' to all the form saveson the frontend.
+=> Add 'login_required' to all the views that should be that way.
+=> on each page, you can have a descriptive header, saying this page does this and have random quotes about that thing on each reload
+	 For eaxmple, on the coupons listing page, I can have the header and quotes about importance of having coupons and down is the list of coupons
+
+=> Maybe the user will get overwhelmed by too many features, so keep them displaying
+   but write coming soon on it. And slowly unlock the features. This could alos be
+	 used fort he packages distribution.
+
+
+features when revenue comes in:
+=> AI gen images and content portal
+=> SocialBu
+
+
+
+=> Visual metaphor for the analytics, yes charts are good, but a visual metaphor might just hit hard. can also use that in sales
+https://www.youtube.com/watch?v=0Vjh5d5rez0&ab_channel=TED
+
+. use ugly images
+. use metaphorical images
+. vary your visuals
+
+=> Mention people's doubts in the software, what they might have
+=> if I get rejected, ask them why I got rejected and how would you have said yes to the same offer
+=> these people let their own reaction to rejection define themselves
+
+
+Pricing:
+https://www.youtube.com/shorts/VSoyTVWfAsw
+https://www.youtube.com/shorts/8kWL6xfd_ZM
+https://www.youtube.com/shorts/aV97_98s_1c
+From the free users

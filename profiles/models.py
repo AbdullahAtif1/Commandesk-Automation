@@ -12,6 +12,9 @@ class CustomUser(AbstractUser): # Forgot to add the company_name field 🤦‍�
     website = models.URLField(blank=True, null=True, verbose_name=_("Website"))
     store_location = models.TextField(blank=True, null=True, verbose_name=_("Store Location"))
     phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name=_("Phone Number"))
+    company_name = models.CharField(max_length=250, null=True, blank=True, verbose_name=_("Company Name"))
+    email_password = models.CharField(max_length=250, null=True, blank=True, verbose_name=_("Email Password"), help_text=_("Password or app-specific password for the company email."))
+    
 
     class Meta:
         verbose_name = _( "Owners")

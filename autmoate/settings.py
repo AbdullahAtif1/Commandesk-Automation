@@ -49,6 +49,8 @@ INSTALLED_APPS = [
 		'sales.apps.SalesConfig',
 
 		'widget_tweaks',
+		"django_q",
+		# "django_q.schedule",
 
 		'django.contrib.sites',  # Add this for third-party auth
     'allauth',
@@ -57,6 +59,24 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     # 'allauth.socialaccount.providers.facebook',
 ]
+
+
+Q_CLUSTER = {
+    'name': 'pdm',
+    'workers': 1,
+    'recycle': 500,
+    'timeout': 60,
+    'retry': 120,
+    'compress': True,
+    'save_limit': 250,
+    'queue_limit': 500,
+    'cpu_affinity': 1,
+    'label': 'Django Q',
+    'daemonize_workers': False,
+    'orm': 'default',
+}
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

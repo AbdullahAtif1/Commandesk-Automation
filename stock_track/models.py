@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from django.core.mail import send_mail
+from concurrent.futures import ThreadPoolExecutor
 
 '''
 I'll ask the free trial users owner about
@@ -156,4 +158,26 @@ class InventoryLog(models.Model):
 
     def __str__(self):
         return f"Log for {self.inventory.product} - Change: {self.change_quantity}"
+
+
+
+def send_email_notification(company_owner, email_subject, email_body):
+    """
+    Sends an email notification to the company owner.
+    """
+    send_mail(
+        subject = email_subject,
+        message = email_body,
+        from_email = settings.EMAIL_HOST_USER,
+        recipient_list = [company_owner.email],
+        fail_silently = False,
+    )
+
+executor = ThreadPoolExecutor(max_workers=5)
+
+def send_email_in_background(company_owner, email_subject, email_body):
+    """
+    Schedule the email notification to run in the background.
+    """
+    executor.submit(send_email_notification, company_owner, email_subject, email_body)
 

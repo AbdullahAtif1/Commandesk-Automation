@@ -160,7 +160,7 @@ too much clutter based on the current situation) ............. DONE
 additional features:
 
 => Allow the user to download the spreadsheet reults from the db for model(s)
-
+=> Notif emails to company owners -> Convert htme to HTML
 
 
 Changes near end
